@@ -1,0 +1,6 @@
+Flask
+opencv-python
+numpy
+trimesh
+pythreejs
+Pillow
