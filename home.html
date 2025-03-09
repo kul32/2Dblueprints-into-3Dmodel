@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - AI 2D to 3D Converter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>AI-Powered 2D to 3D Model Converter</h1>
+    </header>
+
+    <main>
+        <section class="intro">
+            <p>
+                This AI-driven project uses **Convolutional Neural Networks (CNN)** to transform **2D floor plans**  
+                into **high-quality 3D models**. Powered by **computer vision** and deep learning,  
+                it generates accurate 3D reconstructions from simple images.
+            </p>
+        </section>
+
+        <section class="features">
+            <h2>Key Features</h2>
+            <ul>
+                <li>📌 AI & CNN-powered 3D model generation</li>
+                <li>📌 Converts **2D floor plans** into **3D objects**</li>
+                <li>📌 Interactive **3D viewer** with zoom and rotation</li>
+                <li>📌 Fast & easy **upload and process** interface</li>
+            </ul>
+        </section>
+
+        <a href="{{ url_for('index') }}" class="upload-btn">Get Started</a>
+    </main>
+
+    <footer>
+        <p>Developed with ❤️ using AI and Computer Vision</p>
+    </footer>
+</body>
+</html>
