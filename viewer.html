@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Model Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { width: 100%; height: 100%; overflow: hidden; }
+        #viewer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        #controls { position: fixed; bottom: 20px; right: 20px; z-index: 100; display: flex; flex-direction: column; }
+        #controls button { margin: 5px; padding: 10px; font-size: 14px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div id="viewer"></div>
+
+    <div id="controls">
+        <button onclick="zoomIn()">Zoom In</button>
+        <button onclick="zoomOut()">Zoom Out</button>
+        <button onclick="rotateLeft()">Rotate Left</button>
+        <button onclick="rotateRight()">Rotate Right</button>
+        <button onclick="resetView()">Reset View</button>
+    </div>
+
+    <script>
+        console.log("Attempting to load 3D model...");
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById("viewer").appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        camera.position.set(0, 100, 300);
+        controls.target.set(0, 50, 0);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(10, 10, 10).normalize();
+        scene.add(directionalLight);
+
+        const objLoader = new THREE.OBJLoader();
+        const modelPath = "{{ url_for('serve_obj', filename='floor_plan.obj') }}";
+
+        console.log("Loading OBJ from:", modelPath);
+
+        objLoader.load(modelPath, function (object) {
+            console.log("OBJ Model Loaded Successfully:", object);
+            object.scale.set(1, 1, 1);
+            object.position.set(0, 0, 0);
+            object.rotation.x = -Math.PI / 2;
+            scene.add(object);
+            animate();
+        }, undefined, function (error) {
+            console.error("Error loading OBJ model:", error);
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        function zoomIn() {
+            camera.position.z -= 20;
+        }
+
+        function zoomOut() {
+            camera.position.z += 20;
+        }
+
+        function rotateLeft() {
+            scene.rotation.y -= 0.1;
+        }
+
+        function rotateRight() {
+            scene.rotation.y += 0.1;
+        }
+
+        function resetView() {
+            camera.position.set(0, 100, 300);
+            scene.rotation.set(0, 0, 0);
+            controls.target.set(0, 50, 0);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
